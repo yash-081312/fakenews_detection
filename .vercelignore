@@ -1,0 +1,23 @@
+# Vercel Ignore File
+# Exclude heavy datasets, training notebooks, and desktop UI files
+
+data/**
+notebooks/**
+presentation/**
+results/**
+__pycache__/**
+*.pyc
+*.bat
+.git/**
+.github/**
+
+# Only best_model.pkl and tfidf_vectorizer.pkl are required in models/
+models/random_forest.pkl
+models/linear_svm.pkl
+models/multinomial_naive_bayes.pkl
+models/gradient_boosting.pkl
+models/logistic_regression.pkl
+
+# Desktop Streamlit files (not used in serverless)
+streamlit_app.py
+app.py

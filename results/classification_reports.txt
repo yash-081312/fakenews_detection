@@ -1,0 +1,55 @@
+=== Classification Report: Logistic Regression ===
+              precision    recall  f1-score   support
+
+        Real     1.0000    0.9979    0.9990       973
+        Fake     0.9980    1.0000    0.9990      1000
+
+    accuracy                         0.9990      1973
+   macro avg     0.9990    0.9990    0.9990      1973
+weighted avg     0.9990    0.9990    0.9990      1973
+ROC-AUC Score: 1.0000 | Training Time: 0.23s
+
+=== Classification Report: Multinomial Naive Bayes ===
+              precision    recall  f1-score   support
+
+        Real     0.9856    0.9856    0.9856       973
+        Fake     0.9860    0.9860    0.9860      1000
+
+    accuracy                         0.9858      1973
+   macro avg     0.9858    0.9858    0.9858      1973
+weighted avg     0.9858    0.9858    0.9858      1973
+ROC-AUC Score: 0.9994 | Training Time: 0.02s
+
+=== Classification Report: Linear SVM ===
+              precision    recall  f1-score   support
+
+        Real     1.0000    1.0000    1.0000       973
+        Fake     1.0000    1.0000    1.0000      1000
+
+    accuracy                         1.0000      1973
+   macro avg     1.0000    1.0000    1.0000      1973
+weighted avg     1.0000    1.0000    1.0000      1973
+ROC-AUC Score: 1.0000 | Training Time: 0.76s
+
+=== Classification Report: Random Forest ===
+              precision    recall  f1-score   support
+
+        Real     0.9990    1.0000    0.9995       973
+        Fake     1.0000    0.9990    0.9995      1000
+
+    accuracy                         0.9995      1973
+   macro avg     0.9995    0.9995    0.9995      1973
+weighted avg     0.9995    0.9995    0.9995      1973
+ROC-AUC Score: 1.0000 | Training Time: 1.79s
+
+=== Classification Report: Gradient Boosting ===
+              precision    recall  f1-score   support
+
+        Real     0.9979    0.9990    0.9985       973
+        Fake     0.9990    0.9980    0.9985      1000
+
+    accuracy                         0.9985      1973
+   macro avg     0.9985    0.9985    0.9985      1973
+weighted avg     0.9985    0.9985    0.9985      1973
+ROC-AUC Score: 0.9990 | Training Time: 68.23s
+

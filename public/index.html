@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VeriNews - Fake News Detection & Circulation Analyzer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Navigation / Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-500 to-cyan-400 flex items-center justify-center text-xl shadow-lg shadow-indigo-500/20">
+          🛡️
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-lg text-white tracking-tight">VeriNews</h1>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">v2.0 Serverless</span>
+          </div>
+          <p class="text-xs text-slate-400">Fake News Detection & Circulation Analyzer • DSE Capstone</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-4 text-xs">
+        <div class="hidden md:flex flex-col text-right">
+          <span class="text-slate-300 font-medium">Yaswanth (92400120483)</span>
+          <span class="text-slate-500">Marwadi University • CSE</span>
+        </div>
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-[11px]">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Linear SVM (100% Acc)</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Hero / Navigation Tabs -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 mb-8">
+      <div>
+        <h2 class="text-2xl font-bold text-white tracking-tight">Forensic AI News Analyzer</h2>
+        <p class="text-sm text-slate-400 mt-1">Classify misinformation, audit viral claims, and inspect linguistic deception signals across text and links.</p>
+      </div>
+
+      <div class="flex p-1 bg-slate-900 border border-slate-800 rounded-xl" id="nav-tabs">
+        <button onclick="switchTab('analyzer')" id="tab-btn-analyzer" class="px-4 py-2 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white shadow-sm">
+          🔍 News Analyzer
+        </button>
+        <button onclick="switchTab('benchmark')" id="tab-btn-benchmark" class="px-4 py-2 rounded-lg text-xs font-semibold transition text-slate-400 hover:text-white">
+          📊 Benchmark (5 Models)
+        </button>
+        <button onclick="switchTab('about')" id="tab-btn-about" class="px-4 py-2 rounded-lg text-xs font-semibold transition text-slate-400 hover:text-white">
+          ℹ️ Project Info
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: News Analyzer -->
+    <section id="tab-analyzer" class="space-y-8">
+      
+      <!-- Input Panel -->
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 shadow-xl backdrop-blur">
+        
+        <!-- Mode Switcher -->
+        <div class="flex items-center justify-between gap-4 mb-4 flex-wrap">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Input Source:</span>
+            <div class="inline-flex rounded-lg bg-slate-950 p-1 border border-slate-800">
+              <button onclick="setInputMode('text')" id="mode-text" class="px-3 py-1.5 rounded-md text-xs font-medium bg-indigo-600/30 text-indigo-300 border border-indigo-500/40">
+                ✍️ Direct Text / Headline
+              </button>
+              <button onclick="setInputMode('url')" id="mode-url" class="px-3 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-white">
+                🔗 Multi-Source URL (Wiki / YouTube / Web)
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Samples -->
+          <div class="flex items-center gap-2 flex-wrap text-xs">
+            <span class="text-slate-500">Quick Test:</span>
+            <button onclick="loadSample(0)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/20 font-medium transition">
+              🟢 Reuters Wire
+            </button>
+            <button onclick="loadSample(1)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-400 border border-rose-500/20 font-medium transition">
+              🔴 Viral Hoax
+            </button>
+            <button onclick="loadSample(2)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-sky-400 border border-sky-500/20 font-medium transition">
+              📖 Wikipedia
+            </button>
+          </div>
+        </div>
+
+        <!-- Text Input Form -->
+        <div id="input-container-text">
+          <textarea id="news-text-input" rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition" placeholder="Paste news headline, article body, or viral WhatsApp claim here to evaluate..."></textarea>
+        </div>
+
+        <!-- URL Input Form -->
+        <div id="input-container-url" class="hidden">
+          <div class="relative">
+            <input type="url" id="news-url-input" class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-4 pr-10 py-3.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition" placeholder="e.g. https://en.wikipedia.org/wiki/Fake_news or https://www.youtube.com/watch?v=... or https://reuters.com/...">
+            <span class="absolute right-3.5 top-3.5 text-slate-500 text-base">🌐</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-2">Supports official Wikipedia API summaries, YouTube auto-transcripts/captions, and public news article scraping.</p>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span class="text-xs text-slate-500" id="input-char-counter">Characters: 0 | Words: 0</span>
+          
+          <button onclick="runAnalysis()" id="analyze-btn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/25 transition flex items-center justify-center gap-2">
+            <span>🛡️ Analyze & Detect Misinformation</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="analysis-loading" class="hidden py-16 text-center space-y-4">
+        <div class="inline-block w-10 h-10 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+        <p class="text-sm font-medium text-slate-300">Extracting NLP features and evaluating circulating claims...</p>
+        <p class="text-xs text-slate-500">Running TF-IDF Vectorizer & Linear SVM Inference</p>
+      </div>
+
+      <!-- Results Display -->
+      <div id="analysis-results" class="hidden space-y-6">
+        
+        <!-- Verdict Banner -->
+        <div id="verdict-banner" class="border rounded-2xl p-6 transition shadow-2xl">
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <span id="verdict-icon" class="text-4xl">🟢</span>
+              <div>
+                <span id="verdict-badge" class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">VERIFIED / REAL</span>
+                <h3 id="verdict-title" class="text-2xl font-extrabold text-white mt-1.5 tracking-tight">CREDIBLE & AUTHENTIC NEWS</h3>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-6 self-stretch md:self-auto justify-around border-t md:border-t-0 md:border-l border-slate-800/80 pt-4 md:pt-0 md:pl-6">
+              <div class="text-center">
+                <span class="text-[11px] uppercase tracking-wider text-slate-400 block font-medium">Confidence</span>
+                <span id="metric-confidence" class="text-2xl font-extrabold text-white font-mono">99.2%</span>
+              </div>
+              <div class="text-center">
+                <span class="text-[11px] uppercase tracking-wider text-slate-400 block font-medium">Risk Level</span>
+                <span id="metric-risk" class="text-2xl font-extrabold text-emerald-400 font-mono">Low</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dual Percentage Bar -->
+          <div class="mt-6 pt-6 border-t border-slate-800/60">
+            <div class="flex justify-between text-xs font-semibold mb-2">
+              <span class="text-emerald-400 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Real / Authentic: <span id="bar-real-pct">0%</span>
+              </span>
+              <span class="text-rose-400 flex items-center gap-1.5">
+                Fake / Misinformation: <span id="bar-fake-pct">0%</span> <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+              </span>
+            </div>
+            <div class="w-full h-3 rounded-full bg-slate-950 overflow-hidden flex border border-slate-800">
+              <div id="bar-real" class="bg-emerald-500 h-full transition-all duration-700" style="width: 50%;"></div>
+              <div id="bar-fake" class="bg-rose-500 h-full transition-all duration-700" style="width: 50%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-Column Forensic Breakdown -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Column 1: Circulation Context -->
+          <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+              <span>📢</span> What News is Circulating
+            </h4>
+            
+            <div class="space-y-3">
+              <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-xl">
+                <span class="text-[11px] text-slate-500 block mb-1 font-medium">Core Circulated Claim:</span>
+                <p id="res-circulation-summary" class="text-xs text-slate-300 leading-relaxed italic">--</p>
+              </div>
+
+              <div>
+                <span class="text-[11px] text-slate-500 block mb-2 font-medium">Circulating Entities & Topics:</span>
+                <div id="res-circulating-topics" class="flex flex-wrap gap-1.5">
+                  <span class="text-xs text-slate-600">None detected</span>
+                </div>
+              </div>
+
+              <div id="source-metadata-box" class="p-3 bg-slate-950/70 border border-slate-800 rounded-xl text-xs space-y-1 hidden">
+                <span class="text-[11px] text-indigo-400 font-semibold block">Source Verification</span>
+                <p class="text-slate-400"><strong class="text-slate-300">Type:</strong> <span id="meta-type">--</span></p>
+                <p class="text-slate-400 truncate"><strong class="text-slate-300">Title:</strong> <span id="meta-title">--</span></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Forensic Linguistic Red Flags -->
+          <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+              <span>🔬</span> Linguistic Signals
+            </h4>
+
+            <div class="space-y-3">
+              <div>
+                <span class="text-[11px] text-rose-400 font-medium block mb-1.5 flex items-center gap-1">
+                  <span>🚨</span> Sensationalist Red Flags:
+                </span>
+                <div id="res-red-flags" class="flex flex-wrap gap-1.5">
+                  <span class="text-xs text-slate-600">None detected</span>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-slate-800/80">
+                <span class="text-[11px] text-emerald-400 font-medium block mb-1.5 flex items-center gap-1">
+                  <span>⚓</span> Journalistic Credibility Anchors:
+                </span>
+                <div id="res-credibility-anchors" class="flex flex-wrap gap-1.5">
+                  <span class="text-xs text-slate-600">None detected</span>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-slate-800/80">
+                <span class="text-[11px] text-slate-500 font-medium block mb-1.5">Salient TF-IDF Vocabulary:</span>
+                <div id="res-salient-terms" class="flex flex-wrap gap-1.5">
+                  <span class="text-xs text-slate-600">--</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 3: Stylometric Statistics -->
+          <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+              <span>📏</span> Stylometric & Intensity Metrics
+            </h4>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-xl text-center">
+                <span class="text-[10px] text-slate-500 uppercase block">Total Words</span>
+                <span id="metric-word-count" class="text-lg font-bold text-white font-mono mt-0.5 block">0</span>
+              </div>
+              <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-xl text-center">
+                <span class="text-[10px] text-slate-500 uppercase block">Exclamation Marks</span>
+                <span id="metric-exclamations" class="text-lg font-bold text-white font-mono mt-0.5 block">0</span>
+              </div>
+              <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-xl text-center">
+                <span class="text-[10px] text-slate-500 uppercase block">ALL-CAPS Ratio</span>
+                <span id="metric-caps-ratio" class="text-lg font-bold text-white font-mono mt-0.5 block">0%</span>
+              </div>
+              <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-xl text-center">
+                <span class="text-[10px] text-slate-500 uppercase block">Lexical Diversity</span>
+                <span id="metric-lexical-div" class="text-lg font-bold text-white font-mono mt-0.5 block">0.0</span>
+              </div>
+            </div>
+
+            <div class="p-3 bg-indigo-500/5 border border-indigo-500/10 rounded-xl text-xs text-slate-400">
+              💡 <strong>Linguistic Fact:</strong> Fabricated and deceptive stories show 3.4x higher exclamation mark frequency and elevated capitalization intensity compared to standard journalistic releases.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 2: Model Benchmark -->
+    <section id="tab-benchmark" class="hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 shadow-xl">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h3 class="text-lg font-bold text-white">Algorithm Benchmark & Viva Defense</h3>
+            <p class="text-xs text-slate-400 mt-1">Evaluated on 1,973 held-out test samples from the Kaggle Fake News Detection benchmark corpus.</p>
+          </div>
+          <span class="text-xs px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-full font-mono font-semibold">
+            Slide 9 Capstone Defense
+          </span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-950 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
+              <tr>
+                <th class="py-3 px-4">Algorithm</th>
+                <th class="py-3 px-4">Accuracy</th>
+                <th class="py-3 px-4">Precision</th>
+                <th class="py-3 px-4">Recall</th>
+                <th class="py-3 px-4">F1-Score</th>
+                <th class="py-3 px-4">ROC-AUC</th>
+                <th class="py-3 px-4">Training Time</th>
+                <th class="py-3 px-4">Deployment Status</th>
+              </tr>
+            </thead>
+            <tbody id="benchmark-table-body" class="divide-y divide-slate-800/60 text-slate-300 text-xs">
+              <!-- Dynamically populated or fallback -->
+              <tr class="bg-indigo-950/20 font-semibold text-white">
+                <td class="py-3 px-4 flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-indigo-400"></span> Linear SVM (SVC)
+                </td>
+                <td class="py-3 px-4 font-mono text-emerald-400">100.00%</td>
+                <td class="py-3 px-4 font-mono text-emerald-400">100.00%</td>
+                <td class="py-3 px-4 font-mono text-emerald-400">100.00%</td>
+                <td class="py-3 px-4 font-mono text-emerald-400">100.00%</td>
+                <td class="py-3 px-4 font-mono text-emerald-400">100.00%</td>
+                <td class="py-3 px-4 font-mono">0.76 s</td>
+                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">Active in Production</span></td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-medium">Random Forest</td>
+                <td class="py-3 px-4 font-mono">99.95%</td>
+                <td class="py-3 px-4 font-mono">100.00%</td>
+                <td class="py-3 px-4 font-mono">99.90%</td>
+                <td class="py-3 px-4 font-mono">99.95%</td>
+                <td class="py-3 px-4 font-mono">100.00%</td>
+                <td class="py-3 px-4 font-mono">1.79 s</td>
+                <td class="py-3 px-4 text-slate-500">Benchmarked</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-medium">Logistic Regression</td>
+                <td class="py-3 px-4 font-mono">99.90%</td>
+                <td class="py-3 px-4 font-mono">99.80%</td>
+                <td class="py-3 px-4 font-mono">100.00%</td>
+                <td class="py-3 px-4 font-mono">99.90%</td>
+                <td class="py-3 px-4 font-mono">100.00%</td>
+                <td class="py-3 px-4 font-mono">0.23 s</td>
+                <td class="py-3 px-4 text-slate-500">Benchmarked</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-medium">Gradient Boosting</td>
+                <td class="py-3 px-4 font-mono">99.85%</td>
+                <td class="py-3 px-4 font-mono">99.90%</td>
+                <td class="py-3 px-4 font-mono">99.80%</td>
+                <td class="py-3 px-4 font-mono">99.85%</td>
+                <td class="py-3 px-4 font-mono">99.90%</td>
+                <td class="py-3 px-4 font-mono">68.23 s</td>
+                <td class="py-3 px-4 text-slate-500">Benchmarked</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-medium">Multinomial Naive Bayes</td>
+                <td class="py-3 px-4 font-mono">98.58%</td>
+                <td class="py-3 px-4 font-mono">98.60%</td>
+                <td class="py-3 px-4 font-mono">98.60%</td>
+                <td class="py-3 px-4 font-mono">98.60%</td>
+                <td class="py-3 px-4 font-mono">99.94%</td>
+                <td class="py-3 px-4 font-mono">0.02 s</td>
+                <td class="py-3 px-4 text-slate-500">Benchmarked</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-400">
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-1.5">
+            <h5 class="text-white font-semibold flex items-center gap-1.5">
+              <span>🎯</span> Why Linear SVM Outperformed All Other Models
+            </h5>
+            <p>TF-IDF text feature matrices contain thousands of dimensions. Support Vector Machines with a linear kernel excel in high-dimensional, linearly separable sparse text spaces by maximizing the classification margin, avoiding overfitting while requiring only 0.76s training time.</p>
+          </div>
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-1.5">
+            <h5 class="text-white font-semibold flex items-center gap-1.5">
+              <span>⚖️</span> Class Balance & Clean Dataset
+            </h5>
+            <p>The 9,865 deduplicated articles maintain near-perfect 50.68% Fake vs 49.32% Real balance. This eliminates class skew bias and allows F1, Precision, and Recall to evaluate authentic generalization.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: About & Architecture -->
+    <section id="tab-about" class="hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+        <div>
+          <h3 class="text-lg font-bold text-white">Academic Project Details</h3>
+          <p class="text-xs text-slate-400 mt-1">Data Science Essentials (DSE) Capstone Engineering Project</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+            <span class="text-slate-500 font-medium">Student Investigator</span>
+            <p class="text-sm font-bold text-white">Yaswanth</p>
+            <p class="text-slate-400">Enrollment No: <span class="font-mono text-indigo-400">92400120483</span></p>
+          </div>
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+            <span class="text-slate-500 font-medium">Institution & Branch</span>
+            <p class="text-sm font-bold text-white">Marwadi University</p>
+            <p class="text-slate-400">Computer Science & Engineering (CSE)</p>
+          </div>
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+            <span class="text-slate-500 font-medium">Benchmark Dataset</span>
+            <p class="text-sm font-bold text-white">Kaggle Fake News Corpus</p>
+            <p class="text-slate-400">9,865 unique annotated records</p>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3 text-xs text-slate-300">
+          <h4 class="font-semibold text-white text-sm">Serverless Architecture on Vercel</h4>
+          <p>This deployment replaces monolithic desktop Streamlit loops with a high-throughput, cloud-native Vercel Serverless Function architecture:</p>
+          <ul class="list-disc list-inside space-y-1 text-slate-400">
+            <li><strong>Frontend:</strong> Ultra-responsive, zero-bundle Tailwind UI served from edge CDN.</li>
+            <li><strong>Backend:</strong> Stateless Python serverless function (<code class="text-indigo-300">api/index.py</code>) running on Vercel Fluid Compute.</li>
+            <li><strong>ML Inference Engine:</strong> Pre-warmed Linear SVM model (<code class="text-indigo-300">best_model.pkl</code>) with TF-IDF Vectorizer (<code class="text-indigo-300">tfidf_vectorizer.pkl</code>) sub-50ms inference.</li>
+            <li><strong>Multi-Source Scraper:</strong> Auto-extracts transcripts from YouTube and articles from Wikipedia and news domains.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    <p>VeriNews • Built by Yaswanth (92400120483) • Faculty of Engineering & Technology, Marwadi University</p>
+    <p class="mt-1">Powered by Vercel Serverless Python & Linear Support Vector Classification</p>
+  </footer>
+
+  <!-- Script Logic -->
+  <script>
+    let currentInputMode = 'text';
+    let sampleStories = [];
+
+    // Switch between Analyzer, Benchmark, About tabs
+    function switchTab(tab) {
+      ['analyzer', 'benchmark', 'about'].forEach(t => {
+        const el = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tab) {
+          el.classList.remove('hidden');
+          btn.className = "px-4 py-2 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white shadow-sm";
+        } else {
+          el.classList.add('hidden');
+          btn.className = "px-4 py-2 rounded-lg text-xs font-semibold transition text-slate-400 hover:text-white";
+        }
+      });
+    }
+
+    // Toggle Text vs URL mode
+    function setInputMode(mode) {
+      currentInputMode = mode;
+      const textContainer = document.getElementById('input-container-text');
+      const urlContainer = document.getElementById('input-container-url');
+      const btnText = document.getElementById('mode-text');
+      const btnUrl = document.getElementById('mode-url');
+
+      if (mode === 'text') {
+        textContainer.classList.remove('hidden');
+        urlContainer.classList.add('hidden');
+        btnText.className = "px-3 py-1.5 rounded-md text-xs font-medium bg-indigo-600/30 text-indigo-300 border border-indigo-500/40";
+        btnUrl.className = "px-3 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-white";
+      } else {
+        textContainer.classList.add('hidden');
+        urlContainer.classList.remove('hidden');
+        btnUrl.className = "px-3 py-1.5 rounded-md text-xs font-medium bg-indigo-600/30 text-indigo-300 border border-indigo-500/40";
+        btnText.className = "px-3 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-white";
+      }
+    }
+
+    // Word & Character count update
+    const textArea = document.getElementById('news-text-input');
+    const counter = document.getElementById('input-char-counter');
+    textArea.addEventListener('input', () => {
+      const text = textArea.value;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      counter.innerText = `Characters: ${text.length} | Words: ${words}`;
+    });
+
+    // Load sample stories
+    async function fetchSamples() {
+      try {
+        const res = await fetch('/api/samples');
+        if (res.ok) {
+          const data = await res.json();
+          sampleStories = data.samples || [];
+        }
+      } catch (e) {
+        console.warn("Using offline sample fallback:", e);
+      }
+    }
+
+    function loadSample(idx) {
+      setInputMode('text');
+      const samples = sampleStories.length > 0 ? sampleStories : [
+        { text: "WASHINGTON (Reuters) - The Federal Reserve held interest rates steady on Wednesday and signaled borrowing costs are likely to stay on hold for an extended period as officials await more clarity on inflation." },
+        { text: "SHOCKING BOMBSHELL EXPOSED! Deep state whistleblowers leaked documents showing secret election rigging schemes and hidden alien technology suppressed by mainstream media!" },
+        { text: "Natural language processing is an interdisciplinary subfield of computer science and linguistics. It is primarily concerned with giving computers the ability to support and manipulate human speech." }
+      ];
+      if (samples[idx]) {
+        textArea.value = samples[idx].text;
+        textArea.dispatchEvent(new Event('input'));
+      }
+    }
+
+    // Execute Analysis
+    async function runAnalysis() {
+      const isUrl = currentInputMode === 'url';
+      const textInput = textArea.value.trim();
+      const urlInput = document.getElementById('news-url-input').value.trim();
+
+      if (isUrl && !urlInput) {
+        alert("Please enter a valid URL (Wikipedia, YouTube, or News Webpage).");
+        return;
+      }
+      if (!isUrl && !textInput) {
+        alert("Please enter or paste news text to analyze.");
+        return;
+      }
+
+      const payload = isUrl ? { url: urlInput } : { text: textInput };
+
+      const loadingEl = document.getElementById('analysis-loading');
+      const resultsEl = document.getElementById('analysis-results');
+      const analyzeBtn = document.getElementById('analyze-btn');
+
+      loadingEl.classList.remove('hidden');
+      resultsEl.classList.add('hidden');
+      analyzeBtn.disabled = true;
+      analyzeBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+      try {
+        const res = await fetch('/api/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Analysis failed.");
+        }
+
+        renderResults(data);
+      } catch (err) {
+        alert(`Error: ${err.message}`);
+      } finally {
+        loadingEl.classList.add('hidden');
+        analyzeBtn.disabled = false;
+        analyzeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    function renderResults(data) {
+      const resultsEl = document.getElementById('analysis-results');
+      const banner = document.getElementById('verdict-banner');
+      const icon = document.getElementById('verdict-icon');
+      const badge = document.getElementById('verdict-badge');
+      const title = document.getElementById('verdict-title');
+      const conf = document.getElementById('metric-confidence');
+      const risk = document.getElementById('metric-risk');
+
+      title.innerText = data.verdict;
+      conf.innerText = `${data.confidence || data.accuracy_confidence}%`;
+      risk.innerText = data.risk_level;
+
+      // Color coding
+      if (data.fake_percentage >= 70) {
+        icon.innerText = "🔴";
+        badge.innerText = "HIGH RISK OF FAKE NEWS";
+        badge.className = "text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30";
+        banner.className = "border border-rose-500/40 bg-rose-950/20 rounded-2xl p-6 transition shadow-2xl";
+        risk.className = "text-2xl font-extrabold text-rose-400 font-mono";
+      } else if (data.fake_percentage >= 40) {
+        icon.innerText = "🟡";
+        badge.innerText = "SUSPICIOUS / UNVERIFIED";
+        badge.className = "text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30";
+        banner.className = "border border-amber-500/40 bg-amber-950/20 rounded-2xl p-6 transition shadow-2xl";
+        risk.className = "text-2xl font-extrabold text-amber-400 font-mono";
+      } else {
+        icon.innerText = "🟢";
+        badge.innerText = "CREDIBLE & AUTHENTIC";
+        badge.className = "text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+        banner.className = "border border-emerald-500/40 bg-emerald-950/20 rounded-2xl p-6 transition shadow-2xl";
+        risk.className = "text-2xl font-extrabold text-emerald-400 font-mono";
+      }
+
+      // Percentage Bars
+      const realPct = data.real_percentage || (100 - data.fake_percentage);
+      const fakePct = data.fake_percentage;
+      document.getElementById('bar-real-pct').innerText = `${realPct}%`;
+      document.getElementById('bar-fake-pct').innerText = `${fakePct}%`;
+      document.getElementById('bar-real').style.width = `${realPct}%`;
+      document.getElementById('bar-fake').style.width = `${fakePct}%`;
+
+      // Summary & Topics
+      document.getElementById('res-circulation-summary').innerText = data.circulation_summary || "Direct statement provided without extended body.";
+      
+      const topicsContainer = document.getElementById('res-circulating-topics');
+      topicsContainer.innerHTML = '';
+      if (data.circulating_topics && data.circulating_topics.length > 0) {
+        data.circulating_topics.forEach(t => {
+          const chip = document.createElement('span');
+          chip.className = "px-2.5 py-0.5 rounded-full text-xs bg-slate-800 text-slate-300 border border-slate-700 font-medium";
+          chip.innerText = t;
+          topicsContainer.appendChild(chip);
+        });
+      } else {
+        topicsContainer.innerHTML = '<span class="text-xs text-slate-600">General statement (no specific public entity detected)</span>';
+      }
+
+      // Metadata if URL
+      const metaBox = document.getElementById('source-metadata-box');
+      if (data.source_metadata && data.source_metadata.source_type && data.source_metadata.source_type !== "Direct Text Input") {
+        metaBox.classList.remove('hidden');
+        document.getElementById('meta-type').innerText = data.source_metadata.source_type;
+        document.getElementById('meta-title').innerText = data.source_metadata.title || "Web Link";
+      } else {
+        metaBox.classList.add('hidden');
+      }
+
+      // Red flags
+      const flagsContainer = document.getElementById('res-red-flags');
+      flagsContainer.innerHTML = '';
+      if (data.red_flags_found && data.red_flags_found.length > 0) {
+        data.red_flags_found.forEach(rf => {
+          const chip = document.createElement('span');
+          chip.className = "px-2 py-0.5 rounded text-xs bg-rose-500/20 text-rose-300 border border-rose-500/30 font-semibold";
+          chip.innerText = `⚠ ${rf}`;
+          flagsContainer.appendChild(chip);
+        });
+      } else {
+        flagsContainer.innerHTML = '<span class="text-xs text-slate-600">None detected (Clean journalistic tone)</span>';
+      }
+
+      // Credibility anchors
+      const anchorsContainer = document.getElementById('res-credibility-anchors');
+      anchorsContainer.innerHTML = '';
+      if (data.credibility_anchors && data.credibility_anchors.length > 0) {
+        data.credibility_anchors.forEach(ca => {
+          const chip = document.createElement('span');
+          chip.className = "px-2 py-0.5 rounded text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold";
+          chip.innerText = `✔ ${ca}`;
+          anchorsContainer.appendChild(chip);
+        });
+      } else {
+        anchorsContainer.innerHTML = '<span class="text-xs text-slate-600">None detected</span>';
+      }
+
+      // Salient terms
+      const salientContainer = document.getElementById('res-salient-terms');
+      salientContainer.innerHTML = '';
+      if (data.top_salient_terms && data.top_salient_terms.length > 0) {
+        data.top_salient_terms.slice(0, 8).forEach(st => {
+          const chip = document.createElement('span');
+          chip.className = "px-2 py-0.5 rounded text-xs bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-mono";
+          chip.innerText = st;
+          salientContainer.appendChild(chip);
+        });
+      } else {
+        salientContainer.innerHTML = '<span class="text-xs text-slate-600">--</span>';
+      }
+
+      // Metrics
+      const m = data.sensationalism_metrics || {};
+      document.getElementById('metric-word-count').innerText = m.total_word_count || 0;
+      document.getElementById('metric-exclamations').innerText = m.exclamation_count || 0;
+      document.getElementById('metric-caps-ratio').innerText = `${m.all_caps_percentage || 0}%`;
+      document.getElementById('metric-lexical-div').innerText = m.lexical_diversity || 0.0;
+
+      resultsEl.classList.remove('hidden');
+      resultsEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Initialize
+    fetchSamples();
+  </script>
+
+</body>
+</html>

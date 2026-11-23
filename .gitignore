@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Large Datasets
+data/
+
+# Large non-production benchmark model weights
+models/random_forest.pkl
+models/linear_svm.pkl
+models/multinomial_naive_bayes.pkl
+models/gradient_boosting.pkl
+models/logistic_regression.pkl
+
+# Environment & Vercel
+.env
+.venv/
+env/
+venv/
+.vercel/
